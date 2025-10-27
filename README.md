@@ -18,7 +18,7 @@ This system provides a robust API platform for managing chat applications with f
 - **RESTful API**: Complete CRUD operations with Swagger documentation
 
 
-- ## Security
+ ## Security
 
 ### Authentication
 - **API Key Authentication**: Golang endpoints require `X-API-Key` header
@@ -700,6 +700,7 @@ chat-system-app/
 ├── .gitignore
 └── README.md
 ```
+
 
 
 
