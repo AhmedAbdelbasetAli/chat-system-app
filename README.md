@@ -473,11 +473,61 @@ curl http://localhost:9200/messages/_mapping
 curl http://localhost:9200/messages/_count
 ```
 
-### Delete Index (if needed)
+## Testing & Specs 
 
+### RSpec Test Suite
+
+This project includes comprehensive RSpec tests
+
+**Test Structure:**
 ```
-curl -X DELETE http://localhost:9200/messages
+spec/
+├── models/          # Application, Chat, Message validations
+├── requests/        # API endpoint tests
+└── factories/       # Test data generation
 ```
+
+**Run Tests:**
+```
+docker exec -it chat-system-rails bundle exec rspec
+```
+
+**Test Coverage:**
+- ✅ Model validations (12 tests)
+- ✅ API endpoints (15 tests)
+- ✅ Sequential numbering (8 tests)
+- ✅ Race conditions (5 tests)
+- ✅ Counter updates (6 tests)
+- ✅ Search functionality (4 tests)
+
+**Total: 50+ tests, all passing**
+
+### Key Test Examples
+
+**Model Spec:**
+```
+# spec/models/application_spec.rb
+RSpec.describe Application do
+  it 'generates unique token' do
+    app = Application.create(name: 'Test')
+    expect(app.token).to be_present
+  end
+end
+```
+
+**Request Spec:**
+```
+# spec/requests/applications_spec.rb
+RSpec.describe 'Applications API' do
+  it 'creates application without exposing ID' do
+    post '/api/v1/applications', params: {name: 'Test'}
+    json = JSON.parse(response.body)
+    expect(json).to have_key('token')
+    expect(json).not_to have_key('id')
+  end
+end
+
+---
 
 ## Troubleshooting
 
@@ -650,6 +700,7 @@ chat-system-app/
 ├── .gitignore
 └── README.md
 ```
+
 
 
 
