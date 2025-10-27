@@ -1,0 +1,49 @@
+# Rails
+log/*
+tmp/*
+*.log
+.byebug_history
+coverage/
+db/*.sqlite3
+db/*.sqlite3-journal
+db/*.sqlite3-*
+storage/*
+node_modules/
+
+# Golang
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.dockerignore
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Yarn
+yarn-error.log
+
+# Build artifacts
+/public/packs
+/public/packs-test
+/public/assets

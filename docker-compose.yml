@@ -1,0 +1,143 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: chat-system-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: chat_system_development
+      MYSQL_USER: chat_user
+      MYSQL_PASSWORD: chat_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      - chat-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: chat-system-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - chat-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: chat-system-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 50
+      start_period: 90s
+    networks:
+      - chat-network
+
+  rails-api:
+    build:
+      context: ./chat-system-api
+      dockerfile: Dockerfile
+    container_name: chat-system-rails
+    environment:
+      DATABASE_URL: mysql2://chat_user:chat_password@mysql:3306/chat_system_development
+      REDIS_URL: redis://redis:6379/0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      RAILS_ENV: development
+      RAILS_MAX_THREADS: 5
+    ports:
+      - "3000:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_started  # ← Changed from service_healthy
+    volumes:
+      - rails_bundle:/usr/local/bundle
+      # Removed: - ./chat-system-api:/app
+    command: >
+      bash -c "
+        cd /rails &&
+        bundle exec rails db:create db:migrate &&
+        bundle exec rails server -b 0.0.0.0
+      "
+    networks:
+      - chat-network
+
+  sidekiq:
+    build:
+      context: ./chat-system-api
+      dockerfile: Dockerfile
+    container_name: chat-system-sidekiq
+    environment:
+      DATABASE_URL: mysql2://chat_user:chat_password@mysql:3306/chat_system_development
+      REDIS_URL: redis://redis:6379/0
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      RAILS_ENV: development
+    depends_on:
+      - rails-api
+    volumes:
+      - rails_bundle:/usr/local/bundle
+    command: bundle exec sidekiq
+    networks:
+      - chat-network
+
+  golang-service:
+    build:
+      context: ./golang-service
+      dockerfile: Dockerfile
+    container_name: chat-system-golang
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: chat_user
+      DB_PASSWORD: chat_password
+      DB_NAME: chat_system_development
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      PORT: "8080"
+      ENV: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - chat-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  elasticsearch_data:
+  rails_bundle:
+
+networks:
+  chat-network:
+    driver: bridge

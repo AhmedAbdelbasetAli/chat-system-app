@@ -1,0 +1,190 @@
+---
+openapi: 3.0.1
+info:
+  title: Chat System API V1
+  version: v1
+  description: High-performance chat system with sequential numbering, Redis counters,
+    and Elasticsearch search
+paths:
+  "/api/v1/applications":
+    post:
+      summary: Create application
+      tags:
+      - Applications
+      description: Creates a new application with a unique token
+      parameters: []
+      responses:
+        '201':
+          description: successful
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Application name
+                  example: My Chat App
+              required:
+              - name
+  "/api/v1/applications/{token}":
+    parameters:
+    - name: token
+      in: path
+      description: Application token
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show application
+      tags:
+      - Applications
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    patch:
+      summary: Update application
+      tags:
+      - Applications
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Name
+  "/api/v1/applications/{application_token}/chats":
+    parameters:
+    - name: application_token
+      in: path
+      description: Application token
+      required: true
+      schema:
+        type: string
+    post:
+      summary: Create chat
+      tags:
+      - Chats
+      description: Creates a new chat with sequential numbering
+      responses:
+        '201':
+          description: successful
+        '404':
+          description: application not found
+    get:
+      summary: List chats
+      tags:
+      - Chats
+      description: Lists all chats for an application
+      responses:
+        '200':
+          description: successful
+  "/api/v1/applications/{application_token}/chats/{number}":
+    parameters:
+    - name: application_token
+      in: path
+      description: Application token
+      required: true
+      schema:
+        type: string
+    - name: number
+      in: path
+      description: Chat number
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show chat
+      tags:
+      - Chats
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/applications/{application_token}/chats/{chat_number}/messages":
+    parameters:
+    - name: application_token
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: chat_number
+      in: path
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: Create message
+      tags:
+      - Messages
+      description: Creates a new message with sequential numbering
+      parameters: []
+      responses:
+        '201':
+          description: successful
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  type: string
+                  example: Hello World!
+              required:
+              - body
+    get:
+      summary: List messages
+      tags:
+      - Messages
+      description: Lists all messages in a chat
+      responses:
+        '200':
+          description: successful
+  "/api/v1/applications/{application_token}/chats/{chat_number}/messages/search":
+    parameters:
+    - name: application_token
+      in: path
+      required: true
+      schema:
+        type: string
+    - name: chat_number
+      in: path
+      required: true
+      schema:
+        type: integer
+    - name: q
+      in: query
+      description: Search query
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Search messages
+      tags:
+      - Messages
+      description: Search messages using Elasticsearch
+      responses:
+        '200':
+          description: successful
+        '400':
+          description: bad request
+servers:
+- url: http://localhost:3000
+  description: Development server
