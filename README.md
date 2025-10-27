@@ -147,8 +147,6 @@ Visit Swagger UI: http://localhost:3000/api-docs
 
 
 
-- 
-
 
 ### Application Management
 
@@ -652,5 +650,6 @@ chat-system-app/
 ├── .gitignore
 └── README.md
 ```
+
 
 
