@@ -18,23 +18,7 @@ This system provides a robust API platform for managing chat applications with f
 - **RESTful API**: Complete CRUD operations with Swagger documentation
 
 
- ## Security
-
-### Authentication
-- **API Key Authentication**: Golang endpoints require `X-API-Key` header
-- **Token-Based Access**: Applications identified by system-generated tokens (no exposed IDs)
-- **Development Key**: `dev_key_for_testing_only` (⚠️ Change for production)
-
-### Data Protection
-- **SQL Injection Prevention**: All queries use parameterized statements (ActiveRecord, prepared statements)
-- **Input Validation**: Character limits enforced, UTF-8 encoding, sanitized inputs
-- **Race Condition Protection**: Redis distributed locks ensure data consistency and prevent duplicate numbering
-
-### Configuration Security
-- **Environment Variables**: Sensitive credentials stored in environment variables (never committed to Git)
-- **CORS**: Configured in `config/initializers/cors.rb` (⚠️ Restrict origins in production)
-
-## Architecture
+ ## Architecture
 
 ### Technology Stack
 
@@ -85,6 +69,22 @@ This system provides a robust API platform for managing chat applications with f
 - **Redis**: localhost:6379
 - **Elasticsearch**: http://localhost:9200
 - **Swagger UI**: http://localhost:3000/api-docs
+
+## Security
+
+### Authentication
+- **API Key Authentication**: Golang endpoints require `X-API-Key` header
+- **Token-Based Access**: Applications identified by system-generated tokens (no exposed IDs)
+- **Development Key**: `dev_key_for_testing_only` (⚠️ Change for production)
+
+### Data Protection
+- **SQL Injection Prevention**: All queries use parameterized statements (ActiveRecord, prepared statements)
+- **Input Validation**: Character limits enforced, UTF-8 encoding, sanitized inputs
+- **Race Condition Protection**: Redis distributed locks ensure data consistency and prevent duplicate numbering
+
+### Configuration Security
+- **Environment Variables**: Sensitive credentials stored in environment variables (never committed to Git)
+- **CORS**: Configured in `config/initializers/cors.rb` (⚠️ Restrict origins in production)
 
 ## Prerequisites
 
@@ -699,7 +699,7 @@ chat-system-app/
 ├── docker-compose.yml        # Service orchestration
 ├── .gitignore
 └── README.md
-```
+
 
 
 
