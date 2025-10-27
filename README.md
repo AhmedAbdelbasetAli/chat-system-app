@@ -17,7 +17,7 @@ This system provides a robust API platform for managing chat applications with f
 - **Containerized Deployment**: One-command Docker setup
 - **RESTful API**: Complete CRUD operations with Swagger documentation
 
-- 
+
 - ## Security
 
 ### Authentication
@@ -654,15 +654,3 @@ chat-system-app/
 ```
 
 
-## Author
-
-**Ahmed Ali**  
-GitHub: [@AhmedAbdelbasetAli](https://github.com/AhmedAbdelbasetAli)  
-Repository: [chat-system-app](https://github.com/AhmedAbdelbasetAli/chat-system-app)
-
-
-
-For detailed API documentation, visit http://localhost:3000/api-docs after starting the services.
-```
-
-***
