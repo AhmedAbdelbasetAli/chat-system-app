@@ -527,7 +527,8 @@ RSpec.describe 'Applications API' do
   end
 end
 
----
+```
+
 
 ## Troubleshooting
 
@@ -702,4 +703,5 @@ chat-system-app/
 ├── docker-compose.yml        # Service orchestration
 ├── .gitignore
 └── README.md
+
 
