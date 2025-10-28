@@ -675,9 +675,12 @@ docker-compose down -v
 - Asynchronous Elasticsearch indexing
 - Non-blocking operations
 
-## Project Structure
 
 ```
+
+## Project Structure
+
+
 chat-system-app/
 ├── chat-system-api/          # Rails API
 │   ├── app/
@@ -699,3 +702,4 @@ chat-system-app/
 ├── docker-compose.yml        # Service orchestration
 ├── .gitignore
 └── README.md
+
